@@ -1,63 +1,77 @@
 import React, { useState } from 'react';
-import styles from './ChapterButtons.module.css';
+import styles from './TranslationButton.module.css';
 
-export default function TranslateButton({ content, onTranslated }) {
-  const [loading, setLoading] = useState(false);
-  const [isUrdu, setIsUrdu] = useState(false);
-  const [originalContent] = useState(content);
+const TranslationButton = () => {
+    const [isTranslating, setIsTranslating] = useState(false);
+    const [isTranslated, setIsTranslated] = useState(false);
 
-  const API_URL = 'https://backend-piaic-hackathon-2.onrender.com';
+    const handleTranslate = async () => {
+        // Find the main content of the documentation page
+        const contentElement = document.querySelector('article') || document.querySelector('main');
 
-  const handleToggleTranslation = async () => {
-    if (isUrdu) {
-      // Switch back to English
-      setIsUrdu(false);
-      if (onTranslated) {
-        onTranslated(originalContent, false);
-      }
-      return;
-    }
+        if (!contentElement) {
+            console.error("No content found to translate");
+            return;
+        }
 
-    // Translate to Urdu
-    if (!content) return;
+        if (isTranslated) {
+            // Reload page to revert to English (simplest way to ensure clean state)
+            window.location.reload();
+            return;
+        }
 
-    setLoading(true);
+        setIsTranslating(true);
+        const originalContent = contentElement.innerHTML;
 
-    try {
-      const response = await fetch(`${API_URL}/translate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content,
-          target_language: 'ur',
-        }),
-      });
+        try {
+            const response = await fetch('http://localhost:8000/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: originalContent,
+                    target_language: 'ur'
+                })
+            });
 
-      if (!response.ok) throw new Error('Translation failed');
+            const data = await response.json();
 
-      const data = await response.json();
+            if (response.ok) {
+                // Replace content with translation
+                contentElement.innerHTML = data.translated_content;
 
-      setIsUrdu(true);
-      if (onTranslated) {
-        onTranslated(data.translated_content, true, data.cached);
-      }
-    } catch (error) {
-      console.error('Error translating content:', error);
-      alert('Failed to translate content. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+                // Add RTL direction for Urdu
+                contentElement.style.direction = 'rtl';
+                contentElement.style.fontFamily = "'Noto Nastaliq Urdu', 'Arial', sans-serif";
 
-  return (
-    <button
-      className={`${styles.chapterButton} ${styles.translateButton}`}
-      onClick={handleToggleTranslation}
-      disabled={loading}
-    >
-      {loading ? 'Translating...' : isUrdu ? 'Show English' : 'Translate to Urdu'}
-    </button>
-  );
-}
+                setIsTranslated(true);
+            } else {
+                alert('Translation failed: ' + (data.detail || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Translation error:', error);
+            alert('Failed to connect to translation service');
+        } finally {
+            setIsTranslating(false);
+        }
+    };
+
+    return (
+        <button
+            className={`${styles.translateBtn} ${isTranslating ? styles.loading : ''} ${isTranslated ? styles.active : ''}`}
+            onClick={handleTranslate}
+            disabled={isTranslating}
+        >
+            {isTranslating ? (
+                <span className={styles.spinner}>↻</span>
+            ) : isTranslated ? (
+                'Show English'
+            ) : (
+                'Translate to Urdu'
+            )}
+        </button>
+    );
+};
+
+export default TranslationButton;
