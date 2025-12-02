@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = 'http://localhost:8000';
+  const API_URL = 'https://backend-piaic-hackathon-2.onrender.com';
 
   // Load user from localStorage on mount
   useEffect(() => {
