@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(python ingestion.py:*)",
+      "Bash(python main.py:*)",
+      "Bash(taskkill //F //PID 7004)",
+      "Bash(python:*)",
+      "Bash(pip install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
