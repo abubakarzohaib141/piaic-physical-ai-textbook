@@ -1,0 +1,51 @@
+.personalizeBtn {
+    position: fixed;
+    bottom: 140px;
+    /* Above the translate button */
+    right: 20px;
+    background: white;
+    color: #202123;
+    border: 1px solid #d1d5db;
+    padding: 10px 16px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.personalizeBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border-color: #00D991;
+    color: #00D991;
+}
+
+.personalizeBtn.active {
+    background: #00D991;
+    color: white;
+    border-color: #00D991;
+}
+
+.personalizeBtn.active:hover {
+    background: #00b87b;
+}
+
+.loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+@media (max-width: 768px) {
+    .personalizeBtn {
+        bottom: 130px;
+        right: 16px;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}

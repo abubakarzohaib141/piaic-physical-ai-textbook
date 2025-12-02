@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physical AI Textbook - Progress Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .status {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card .number {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .label {
+            color: #666;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 5px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+
+        .file-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .file-item {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .file-name {
+            font-family: 'Courier New', monospace;
+            color: #333;
+        }
+
+        .badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.new {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+
+        .command-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .command-box code {
+            color: #4ec9b0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .priority-high {
+            border-left-color: #dc3545;
+        }
+
+        .priority-medium {
+            border-left-color: #ffc107;
+        }
+
+        .priority-low {
+            border-left-color: #28a745;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item::before {
+            content: '✓';
+            position: absolute;
+            left: -41px;
+            top: 20px;
+            width: 25px;
+            height: 25px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 Physical AI & Humanoid Robotics</h1>
+            <p class="status">Progress Dashboard - December 2, 2025 (2:00 AM)</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number">156</div>
+                <div class="label">Docs in Qdrant</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">✅</div>
+                <div class="label">Backend Done</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">✅</div>
+                <div class="label">Chatbot UI</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">90%</div>
+                <div class="label">Complete</div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Overall Progress -->
+            <div class="section">
+                <h2>Overall Progress</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 90%;">90% Complete</div>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">docs/docusaurus.config.js</span>
+                    <span class="badge completed">CONFIGURED</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">physical-ai/introduction.md</span>
+                    <span class="badge new">NEW</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module1-ros2/overview.md</span>
+                    <span class="badge new">NEW (2,500 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module1-ros2/nodes-topics.md</span>
+                    <span class="badge new">NEW (3,000 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module1-ros2/urdf.md</span>
+                    <span class="badge new">NEW (2,500 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module2-gazebo/overview.md</span>
+                    <span class="badge new">NEW (2,000 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module2-gazebo/sensors.md</span>
+                    <span class="badge new">NEW (2,000 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module3-isaac/overview.md</span>
+                    <span class="badge new">NEW (2,000 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module3-isaac/navigation.md</span>
+                    <span class="badge new">NEW (2,000 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module4-vla/overview.md</span>
+                    <span class="badge new">NEW (1,800 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">module4-vla/voice-to-action.md</span>
+                    <span class="badge new">NEW (2,500 words)</span>
+                </div>
+                <div class="file-item">
+                    <span class="file-name">week-by-week/outline.md</span>
+                    <span class="badge new">NEW (2,000 words)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Run -->
+        <div class="section">
+            <h2>🚀 How to Run Your Site</h2>
+            <p style="margin-bottom: 15px;"><strong>Step 1:</strong> Navigate to project folder</p>
+            <div class="command-box">
+                <code>cd d:\piaic-physical-ai-textbook\docs</code>
+                <button class="copy-btn" onclick="copyCommand(this)">Copy</button>
+            </div>
+            </a>
+            <a href="file:///d:/piaic-physical-ai-textbook/PROGRESS_SETUP.md" class="cta-button">
+                📄 Detailed README
+            </a>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function copyCommand(button) {
+            const commandBox = button.parentElement;
+            const code = commandBox.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Animate progress bar on load
+        window.addEventListener('load', () => {
+            const progressFill = document.querySelector('.progress-fill');
+            progressFill.style.width = '0%';
+            setTimeout(() => {
+                progressFill.style.width = '60%';
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>
