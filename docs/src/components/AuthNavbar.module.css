@@ -1,0 +1,57 @@
+.authNavItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 16px;
+  height: 100%;
+}
+
+.signupBtn {
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 217, 145, 0.2);
+}
+
+.signupBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 217, 145, 0.3);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ifm-navbar-link-color);
+}
+
+.logoutBtn {
+  background: transparent;
+  border: 1px solid var(--ifm-navbar-link-color);
+  color: var(--ifm-navbar-link-color);
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.logoutBtn:hover {
+  background: rgba(0, 217, 145, 0.1);
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  opacity: 1;
+}

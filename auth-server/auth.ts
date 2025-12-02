@@ -1,0 +1,23 @@
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "./db";
+import * as schema from "./schema";
+
+export const auth = betterAuth({
+    database: drizzleAdapter(db, {
+        provider: "pg",
+        schema: schema
+    }),
+    emailAndPassword: {
+        enabled: true
+    },
+    user: {
+        additionalFields: {
+            software_background: { type: "string" },
+            hardware_background: { type: "string" },
+            programming_languages: { type: "string" },
+            robotics_experience: { type: "string" },
+            learning_goals: { type: "string" }
+        }
+    }
+});
